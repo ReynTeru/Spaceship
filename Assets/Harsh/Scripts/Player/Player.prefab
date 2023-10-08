@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 5024093624727527576}
   - component: {fileID: 650907601326553164}
   - component: {fileID: 5389163316106082842}
-  - component: {fileID: 5226017409783043231}
   - component: {fileID: 4872220214182630599}
   - component: {fileID: 141344400607698870}
   m_Layer: 0
@@ -84,7 +83,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 1.74
-  m_Radius: 0.28
+  m_Radius: 0.2
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -138,19 +137,6 @@ MonoBehaviour:
   horizontalLookSenstivity: 30
   verticalLookSenstivity: 30
   playerCamera: {fileID: 8185600015441658425}
---- !u!114 &5226017409783043231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 962412183650971799}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b720f1d736f825438200c1059c848f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  physPushForce: 2
 --- !u!54 &4872220214182630599
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -190,9 +176,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cff5ac715d56d844970a33277d2368d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactionDistance: 5
+  interactionDistance: 2
   interactableLocationTarget: {fileID: 7698713565405069763}
   interactableLocation: {x: 0, y: 0, z: 0}
+  InteractionPrompt: {fileID: 0}
+  CameraRef: {fileID: 1581786858794696329}
+  bGrabbed: 0
 --- !u!1 &1581786858794696329
 GameObject:
   m_ObjectHideFlags: 0

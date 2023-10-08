@@ -25,7 +25,7 @@ public class PlayerInteraction : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void LateUpdate()
     {
         interactableLocation = interactableLocationTarget.transform.position;
         CheckForInteractable();
@@ -43,9 +43,10 @@ public class PlayerInteraction : MonoBehaviour
 
         if (bGrabbed)
         {
-            if (Vector3.Distance(interactableObject.transform.position, interactableLocation) > 0.1f)
+            if (Vector3.Distance(interactableObject.transform.position, interactableLocation) > 0.15f)
             {
-                interactableObject.transform.position = Vector3.Lerp(interactableObject.transform.position, interactableLocation, Time.deltaTime * 5.0f);
+                Debug.Log("Moving");
+                interactableObject.transform.position = Vector3.Lerp(interactableObject.transform.position, interactableLocation, Time.deltaTime * 10f);
             }
            
         }
