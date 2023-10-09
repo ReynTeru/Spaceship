@@ -7,4 +7,6 @@ public interface IInteract
     public void Interact();
     public void StopInteract();
     InteractionType GetInteractionType();
+    
+    string[] GetDialogueLines();
 }

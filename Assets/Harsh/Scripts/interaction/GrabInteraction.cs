@@ -6,6 +6,8 @@ public class GrabInteraction : MonoBehaviour, IInteract
 {
     bool bGrabbed = false;
     GameObject PlayerRef;
+    
+    public string[] dialogueLines;
     // Start is called before the first frame update
     void Start()
     {
@@ -36,5 +38,10 @@ public class GrabInteraction : MonoBehaviour, IInteract
     InteractionType IInteract.GetInteractionType()
     {
         return InteractionType.Grab;
+    }
+    
+    string[] IInteract.GetDialogueLines()
+    {
+        return dialogueLines;
     }
 }

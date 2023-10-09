@@ -50,4 +50,9 @@ public class DoorInteract : MonoBehaviour,IInteract
     {
         return interactionType;
     }
+    
+    string[] IInteract.GetDialogueLines()
+    {
+        return null;
+    }
 }

@@ -89,6 +89,15 @@ public partial class @InputMapping: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""NextDialog"",
+                    ""type"": ""Button"",
+                    ""id"": ""e7769b02-5057-4775-ae3d-f4daca062193"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -256,6 +265,17 @@ public partial class @InputMapping: IInputActionCollection2, IDisposable
                     ""action"": ""LookVertical"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fb5c7cbb-aa20-479f-a345-45e62fe0235d"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NextDialog"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -271,6 +291,7 @@ public partial class @InputMapping: IInputActionCollection2, IDisposable
         m_MovementMap_Zoom = m_MovementMap.FindAction("Zoom", throwIfNotFound: true);
         m_MovementMap_LookHorizontal = m_MovementMap.FindAction("LookHorizontal", throwIfNotFound: true);
         m_MovementMap_LookVertical = m_MovementMap.FindAction("LookVertical", throwIfNotFound: true);
+        m_MovementMap_NextDialog = m_MovementMap.FindAction("NextDialog", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -339,6 +360,7 @@ public partial class @InputMapping: IInputActionCollection2, IDisposable
     private readonly InputAction m_MovementMap_Zoom;
     private readonly InputAction m_MovementMap_LookHorizontal;
     private readonly InputAction m_MovementMap_LookVertical;
+    private readonly InputAction m_MovementMap_NextDialog;
     public struct MovementMapActions
     {
         private @InputMapping m_Wrapper;
@@ -350,6 +372,7 @@ public partial class @InputMapping: IInputActionCollection2, IDisposable
         public InputAction @Zoom => m_Wrapper.m_MovementMap_Zoom;
         public InputAction @LookHorizontal => m_Wrapper.m_MovementMap_LookHorizontal;
         public InputAction @LookVertical => m_Wrapper.m_MovementMap_LookVertical;
+        public InputAction @NextDialog => m_Wrapper.m_MovementMap_NextDialog;
         public InputActionMap Get() { return m_Wrapper.m_MovementMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -380,6 +403,9 @@ public partial class @InputMapping: IInputActionCollection2, IDisposable
             @LookVertical.started += instance.OnLookVertical;
             @LookVertical.performed += instance.OnLookVertical;
             @LookVertical.canceled += instance.OnLookVertical;
+            @NextDialog.started += instance.OnNextDialog;
+            @NextDialog.performed += instance.OnNextDialog;
+            @NextDialog.canceled += instance.OnNextDialog;
         }
 
         private void UnregisterCallbacks(IMovementMapActions instance)
@@ -405,6 +431,9 @@ public partial class @InputMapping: IInputActionCollection2, IDisposable
             @LookVertical.started -= instance.OnLookVertical;
             @LookVertical.performed -= instance.OnLookVertical;
             @LookVertical.canceled -= instance.OnLookVertical;
+            @NextDialog.started -= instance.OnNextDialog;
+            @NextDialog.performed -= instance.OnNextDialog;
+            @NextDialog.canceled -= instance.OnNextDialog;
         }
 
         public void RemoveCallbacks(IMovementMapActions instance)
@@ -431,5 +460,6 @@ public partial class @InputMapping: IInputActionCollection2, IDisposable
         void OnZoom(InputAction.CallbackContext context);
         void OnLookHorizontal(InputAction.CallbackContext context);
         void OnLookVertical(InputAction.CallbackContext context);
+        void OnNextDialog(InputAction.CallbackContext context);
     }
 }

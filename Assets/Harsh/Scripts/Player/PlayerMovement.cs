@@ -28,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
     public float PushForce = 10.0f;
     
     bool bGrabbed = false;
+    bool bDialogue = false;
     
     
     // Start is called before the first frame update
@@ -41,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        bDialogue = gameObject.GetComponent<PlayerInteraction>().bDialogue;
         bGrabbed = gameObject.GetComponent<PlayerInteraction>().bGrabbed;
         if (bZoomed)
         {
@@ -55,7 +57,7 @@ public class PlayerMovement : MonoBehaviour
     
     public void PrecessMovement(float longitudinalInput, float lateralInput)
     {
-        if (!bGrabbed)
+        if (!bGrabbed && !bDialogue)
         {
             movementDirection = new Vector3(lateralInput, 0.0f, longitudinalInput);
             characterController.Move(transform.TransformDirection(movementDirection) * playerSpeed * Time.deltaTime);
@@ -72,7 +74,7 @@ public class PlayerMovement : MonoBehaviour
     
     public void ProcessJump()
     {
-        if (characterController.isGrounded && !bGrabbed)
+        if (characterController.isGrounded && !bGrabbed && !bDialogue)
         {
             playerVelocity.y = 0f;
             playerVelocity.y += Mathf.Sqrt(jumpHeight * -2f * gravityValue);
@@ -81,7 +83,7 @@ public class PlayerMovement : MonoBehaviour
     
     void HeadBob()
     {
-        if (characterController.isGrounded && movementDirection.magnitude > 0 && !bGrabbed)
+        if (characterController.isGrounded && movementDirection.magnitude > 0 && !bGrabbed && !bDialogue)
         {
             timer += Time.deltaTime * bobSpeed;
             bobTarget.transform.localPosition = new Vector3(0.0f, Mathf.Sin(timer) * bobFactor + bobTargetOriginalPosition.y, 0.0f);

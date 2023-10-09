@@ -9,6 +9,7 @@ public class ProcessInput : MonoBehaviour
     PlayerLook playerLook;
     PlayerMovement playerMovement;
     PlayerInteraction playerInteraction;
+    
     // Start is called before the first frame update
     void Awake()
     {
@@ -22,6 +23,7 @@ public class ProcessInput : MonoBehaviour
         movementMapActions.Zoom.started += ctx => playerMovement.Zoom();
         movementMapActions.Zoom.canceled += ctx => playerMovement.StopZoom();
         movementMapActions.Interact.started += ctx => playerInteraction.InputInteract();
+        movementMapActions.NextDialog.started += ctx => playerInteraction.NextLine();
     }
 
     // Update is called once per frame
