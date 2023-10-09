@@ -31,11 +31,19 @@ public class Dialogue : MonoBehaviour
     }
     IEnumerator TypeLine()
     {
-       foreach(char c in lines[index])
+       if (lines[index] == String.Empty)
        {
-          textComponent.text += c;
-          yield return new WaitForSeconds(textSpeed);
+          
        }
+       else
+       {
+          foreach(char c in lines[index])
+          {
+             textComponent.text += c;
+             yield return new WaitForSeconds(textSpeed);
+          }
+       }
+    
     }
     
     void NextLine()

@@ -29,8 +29,10 @@ public class PlayerInteraction : MonoBehaviour
         CurrentInteractionType = InteractionType.None;
         InteractionPrompt.SetActive(false);
         DialogueBox.SetActive(false);
+        dialogueLines = null;
         dialogueLines = initialDialogueLines;
         StartDialogue();
+        
     }
 
     // Update is called once per frame
