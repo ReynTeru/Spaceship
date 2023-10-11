@@ -29,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
     
     bool bGrabbed = false;
     bool bDialogue = false;
+    bool bIsFinal = false;
     
     
     // Start is called before the first frame update
@@ -44,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
     {
         bDialogue = gameObject.GetComponent<PlayerInteraction>().bDialogue;
         bGrabbed = gameObject.GetComponent<PlayerInteraction>().bGrabbed;
+        bIsFinal = gameObject.GetComponent<PlayerInteraction>().bWon;
         if (bZoomed)
         {
             playerCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(playerCamera.GetComponent<Camera>().fieldOfView, cameraZoomedFOV, Time.deltaTime * zoomSpeed);
@@ -57,7 +59,7 @@ public class PlayerMovement : MonoBehaviour
     
     public void PrecessMovement(float longitudinalInput, float lateralInput)
     {
-        if (!bGrabbed && !bDialogue)
+        if (!bGrabbed && !bDialogue && !bIsFinal)
         {
             movementDirection = new Vector3(lateralInput, 0.0f, longitudinalInput);
             characterController.Move(transform.TransformDirection(movementDirection) * playerSpeed * Time.deltaTime);
@@ -74,7 +76,7 @@ public class PlayerMovement : MonoBehaviour
     
     public void ProcessJump()
     {
-        if (characterController.isGrounded && !bGrabbed && !bDialogue)
+        if (characterController.isGrounded && !bGrabbed && !bDialogue && !bIsFinal)
         {
             playerVelocity.y = 0f;
             playerVelocity.y += Mathf.Sqrt(jumpHeight * -2f * gravityValue);

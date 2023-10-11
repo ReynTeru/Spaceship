@@ -55,4 +55,9 @@ public class DoorInteract : MonoBehaviour,IInteract
     {
         return null;
     }
+    
+    bool IInteract.GetIsFinal()
+    {
+        return false;
+    }
 }

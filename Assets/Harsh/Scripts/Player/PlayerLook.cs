@@ -16,6 +16,8 @@ public class PlayerLook : MonoBehaviour
     float lookDownDelayTime = 0.5f;
     float clampAngle = 80.0f;
     float currentClampAngle = 0.0f;
+    
+    bool bIsFinal = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +27,7 @@ public class PlayerLook : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        bIsFinal = gameObject.GetComponent<PlayerInteraction>().bWon;
         if (!bLookDownDelay)
         {
             lookDownDelayTimer += Time.deltaTime;
@@ -37,18 +40,22 @@ public class PlayerLook : MonoBehaviour
     
     public void ProcessLook(float horizontalLookInput, float verticalLookInput)
     {
-        if (!bLookDownDelay)
+        if (!bIsFinal)
         {
-            currentClampAngle = 0.0f;
-        }
-        else
-        {
-            currentClampAngle = clampAngle;
-        }
-        verticalRotation -= verticalLookInput * verticalLookSenstivity * Time.deltaTime;
-        verticalRotation = Mathf.Clamp(verticalRotation, -80.0f, currentClampAngle);
+            if (!bLookDownDelay)
+            {
+                currentClampAngle = 0.0f;
+            }
+            else
+            {
+                currentClampAngle = clampAngle;
+            }
+            verticalRotation -= verticalLookInput * verticalLookSenstivity * Time.deltaTime;
+            verticalRotation = Mathf.Clamp(verticalRotation, -80.0f, currentClampAngle);
         
-        playerCamera.transform.localRotation = Quaternion.Euler(verticalRotation, 0.0f, 0.0f);
-        transform.Rotate(Vector3.up * horizontalLookInput * horizontalLookSenstivity * Time.deltaTime);
+            playerCamera.transform.localRotation = Quaternion.Euler(verticalRotation, 0.0f, 0.0f);
+            transform.Rotate(Vector3.up * horizontalLookInput * horizontalLookSenstivity * Time.deltaTime);
+        }
+       
     }
 }

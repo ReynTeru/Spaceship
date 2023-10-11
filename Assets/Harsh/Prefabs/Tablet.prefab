@@ -283,6 +283,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75539850e8c200040ac8528edee06a57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LetGoImpulse: 25
   dialogueLines: []
 --- !u!1 &7307764562699793014
 GameObject:

@@ -18,11 +18,19 @@ public class PlayerInteraction : MonoBehaviour
     public GameObject CameraRef;
     
     public bool bGrabbed = false;
-    public bool bDialogue = false;
+    public bool bDialogue = false; 
+    bool bIsFinal = false;
+    public bool bWon = false;
 
     private string[] dialogueLines;
     public string[] initialDialogueLines;
     public GameObject DialogueBox;
+
+    public GameObject FinalLook;
+    
+    bool bStartTransition = false;
+    float transitionTimer = 0.0f;
+    float transitionTime = 1.0f;
     // Start is called before the first frame update
     void Start()
     {
@@ -44,6 +52,18 @@ public class PlayerInteraction : MonoBehaviour
             if (DialogueBox.GetComponent<Dialogue>().bDialougeStopped)
             {
                 StopDialogue();
+            }
+        }
+
+        if (bStartTransition)
+        { 
+            transitionTimer += Time.deltaTime;
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(FinalLook.transform.forward), Time.deltaTime * 10.0f);
+            if (transitionTimer >= transitionTime)
+            {
+                FinalLook.SetActive(true);
+                bStartTransition = false;
+                bWon = true;
             }
         }
     }
@@ -71,6 +91,7 @@ public class PlayerInteraction : MonoBehaviour
                 //Debug.Log("Moving");
                 interactableObject.transform.position = Vector3.Lerp(interactableObject.transform.position, interactableLocation, Time.deltaTime * 10f);
             }
+            
            
         }
     }
@@ -123,6 +144,7 @@ public class PlayerInteraction : MonoBehaviour
                         else
                         {
                             interactable.Interact();
+                            bIsFinal = interactable.GetIsFinal();
                             bGrabbed = true;
                         }
                         break;
@@ -138,6 +160,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (dialogueLines.Length > 0)
         {
+            InteractionPrompt.SetActive(false);
             Debug.Log("Starting Dialogue");
             DialogueBox.SetActive(true);
             bDialogue = true; 
@@ -149,6 +172,17 @@ public class PlayerInteraction : MonoBehaviour
     
     void StopDialogue()
     {
+        if (bIsFinal)
+        {
+            DialogueBox.SetActive(false);
+            bDialogue = false;
+            dialogueLines = null;
+            bStartTransition = true;
+            
+            
+            gameObject.GetComponentInChildren<CameraWin>().bWon = true;
+            
+        }
         DialogueBox.SetActive(false);
         bDialogue = false;
         dialogueLines = null;

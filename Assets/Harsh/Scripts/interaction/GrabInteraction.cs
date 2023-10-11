@@ -6,6 +6,8 @@ public class GrabInteraction : MonoBehaviour, IInteract
 {
     bool bGrabbed = false;
     GameObject PlayerRef;
+    float LetGoImpulse = 5f;
+    public bool bIsFinal = false;
     
     public string[] dialogueLines;
     // Start is called before the first frame update
@@ -35,9 +37,11 @@ public class GrabInteraction : MonoBehaviour, IInteract
         gameObject.GetComponent<Rigidbody>().AddForce(PlayerRef.transform.forward * 50.0f, ForceMode.Impulse);
         Vector3 fRandom = new Vector3(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
         fRandom = fRandom.normalized;
-        gameObject.GetComponent<Rigidbody>().AddTorque(fRandom* 25f, ForceMode.Impulse);
+        
+        gameObject.GetComponent<Rigidbody>().AddTorque(fRandom* LetGoImpulse, ForceMode.Impulse);
      
         bGrabbed = false;
+        gameObject.layer = default;
     }
     
     InteractionType IInteract.GetInteractionType()
@@ -48,5 +52,10 @@ public class GrabInteraction : MonoBehaviour, IInteract
     string[] IInteract.GetDialogueLines()
     {
         return dialogueLines;
+    }
+    
+    bool IInteract.GetIsFinal()
+    {
+        return bIsFinal;
     }
 }

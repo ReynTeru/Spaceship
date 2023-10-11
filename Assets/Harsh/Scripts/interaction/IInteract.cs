@@ -9,4 +9,6 @@ public interface IInteract
     InteractionType GetInteractionType();
     
     string[] GetDialogueLines();
+    
+    bool GetIsFinal();
 }
