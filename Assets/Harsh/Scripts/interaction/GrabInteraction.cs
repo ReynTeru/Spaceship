@@ -9,6 +9,9 @@ public class GrabInteraction : MonoBehaviour, IInteract
     float LetGoImpulse = 5f;
     public bool bIsFinal = false;
     
+    public bool bHasInteracted = false;
+    public bool bIsClipboard = false;
+    
     public string[] dialogueLines;
     // Start is called before the first frame update
     void Start()
@@ -29,6 +32,11 @@ public class GrabInteraction : MonoBehaviour, IInteract
     {
         gameObject.GetComponent<Rigidbody>().isKinematic = true;
         bGrabbed = true;
+        if (bIsClipboard)
+        {
+            GameObject.FindWithTag("DoorManager").GetComponent<DoorManager>().AddClipboard();
+        }
+        
     }
     
     void IInteract.StopInteract()
@@ -42,6 +50,7 @@ public class GrabInteraction : MonoBehaviour, IInteract
      
         bGrabbed = false;
         gameObject.layer = default;
+        bHasInteracted = true;
     }
     
     InteractionType IInteract.GetInteractionType()

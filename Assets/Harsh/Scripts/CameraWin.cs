@@ -11,6 +11,9 @@ public class CameraWin : MonoBehaviour
     public GameObject TargetC;
     public GameObject Planet;
     
+    public GameObject reflectionCamera;
+    
+    
     GameObject Target;
     float transitionSpeed = 1.0f;
     
@@ -34,8 +37,12 @@ public class CameraWin : MonoBehaviour
             
             if (Target == TargetC)
             {
-                transform.LookAt(Planet.transform.position);
-                //gameObject.GetComponent<Camera>().fieldOfView = Mathf.Lerp(gameObject.GetComponent<Camera>().fieldOfView, FinalFov, Time.deltaTime * transitionSpeed);
+                Quaternion lookOnLook =
+                    Quaternion.LookRotation(Planet.transform.position - transform.position);
+
+                transform.rotation =
+                    Quaternion.Slerp(transform.rotation, lookOnLook, Time.deltaTime);
+                reflectionCamera.SetActive(false);
             }
             else
             {

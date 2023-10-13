@@ -3,23 +3,55 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class FinalDialogue : MonoBehaviour
 {
 public TextMeshProUGUI textComponent;
    public string lines;
    public float textSpeed;
-   public bool bDialougeStopped = true;
+   bool bDialogueStarted = false;
+   bool bLineComplete = false;
+   
+   public InputAction FinishDialogue;
+   
+   float MainmenuTimer = 0.0f;
+   float MainmenuTime = 0.5f;
+   
     void Start()
     {
        textComponent.text = String.Empty;
+       FinishDialogue.Enable();
     }
 
     // Update is called once per frame
-    public void StartDialogue()
+    void Update()
     {
+        if (bLineComplete)
+        {
+            MainmenuTimer += Time.deltaTime;
+            if (MainmenuTimer >= MainmenuTime)
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+            }
+        }
+
+        if (FinishDialogue.triggered && bDialogueStarted)
+        {
+            if (bLineComplete)
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+            }
+            else
+            {
+                textComponent.text = lines;
+                bLineComplete = true;
+            }
+        }
+    }
+    public void StartDialogue()
+    { bDialogueStarted = true;
        textComponent.text = String.Empty;
-       bDialougeStopped = false;
        StartCoroutine(TypeLine());
     }
     IEnumerator TypeLine()
@@ -30,4 +62,6 @@ public TextMeshProUGUI textComponent;
           yield return new WaitForSeconds(textSpeed);
        }
     }
+    
+    
 }
