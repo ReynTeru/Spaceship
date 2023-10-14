@@ -33,6 +33,7 @@ public TextMeshProUGUI textComponent;
             if (MainmenuTimer >= MainmenuTime)
             {
                 UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+                Cursor.lockState = CursorLockMode.None;
             }
         }
 
