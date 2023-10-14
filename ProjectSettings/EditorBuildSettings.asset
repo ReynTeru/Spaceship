@@ -6,10 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Sci Fi Modular Pack/Scenes/Menu.unity
+    path: Assets/FamilyOnEarth/Scenes/Menu.unity
     guid: 917b764655d7fe14e9a24604adb36ebe
   - enabled: 1
-    path: Assets/Sci Fi Modular Pack/Scenes/Game.unity
+    path: Assets/FamilyOnEarth/Scenes/Game.unity
     guid: 61c3fc2c1be344690b19efb0147d93ee
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: b3684cd97d0734440bea05971e4bee34, type: 2}
