@@ -38,6 +38,7 @@ Transform:
   m_Children:
   - {fileID: 4195264355432748870}
   - {fileID: 975698277564831105}
+  - {fileID: 956453495425054726}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &2337320204976179781
@@ -122,6 +123,7 @@ MonoBehaviour:
   playerCamera: {fileID: 1581786858794696329}
   cameraZoomedFOV: 30
   PushForce: 10
+  gettingUpTime: 2.5
 --- !u!114 &5389163316106082842
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,6 +184,13 @@ MonoBehaviour:
   InteractionPrompt: {fileID: 0}
   CameraRef: {fileID: 1581786858794696329}
   bGrabbed: 0
+  bDialogue: 0
+  bWon: 0
+  InteractibleSnapSpeed: 25
+  InteractibleSnapDistanceCloseness: 0.15
+  initialDialogueLines: []
+  DialogueBox: {fileID: 0}
+  FinalLook: {fileID: 0}
 --- !u!1 &1581786858794696329
 GameObject:
   m_ObjectHideFlags: 0
@@ -319,6 +328,37 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
+--- !u!1 &5119220620065806700
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 956453495425054726}
+  m_Layer: 0
+  m_Name: MagnetPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &956453495425054726
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5119220620065806700}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4587867686536907619}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7698713565405069763
 GameObject:
   m_ObjectHideFlags: 0

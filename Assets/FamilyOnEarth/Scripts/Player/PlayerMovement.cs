@@ -33,6 +33,19 @@ public class PlayerMovement : MonoBehaviour
     bool bIsFinal = false;
     
     private EMovementState movementState = EMovementState.NormalGravity;
+    public EMovementState GetMovementState()
+    {
+        return movementState;
+    }
+    
+    bool bIsGettingUp = false;
+    float gettingUpTimer = 0.0f;
+    [SerializeField] float gettingUpTime = 2.5f;
+    Vector3 PositionAfterGettingUp;
+    Vector3 PositionBeforeGettingUp;
+    Quaternion RotationBeforeGettingUp;
+    Quaternion RotationAfterGettingUp;
+    
     
     
     // Start is called before the first frame update
@@ -67,6 +80,20 @@ public class PlayerMovement : MonoBehaviour
             playerCamera.GetComponent<Camera>().fieldOfView = Mathf.Lerp(playerCamera.GetComponent<Camera>().fieldOfView, cameraOriginalFOV, Time.deltaTime * zoomSpeed);
         }
         HeadBob();
+        
+        if (bIsGettingUp)
+        {
+            gettingUpTimer += Time.deltaTime;
+            float gettingUpPercentage = gettingUpTimer / gettingUpTime;
+            Debug.Log(gettingUpPercentage);
+            transform.rotation = Quaternion.Lerp(RotationBeforeGettingUp, RotationAfterGettingUp, gettingUpPercentage);
+            transform.position = Vector3.Lerp(PositionBeforeGettingUp, PositionAfterGettingUp, gettingUpPercentage);
+            if (gettingUpTimer >= gettingUpTime)
+            {
+                gettingUpTimer = 0.0f;
+                bIsGettingUp = false;
+            }
+        }
     }
     
     public void PrecessMovement(float longitudinalInput, float lateralInput)
@@ -75,7 +102,7 @@ public class PlayerMovement : MonoBehaviour
         {
             case EMovementState.NormalGravity:
             {
-                if (!bIsFinal)
+                if (!bIsFinal && !bIsGettingUp)
                 {
                     movementDirection = new Vector3(lateralInput, 0.0f, longitudinalInput);
                     rb.velocity = transform.TransformDirection(movementDirection * playerSpeed * Time.deltaTime);
@@ -143,7 +170,7 @@ public class PlayerMovement : MonoBehaviour
         {
             case EMovementState.NormalGravity:
             {
-                if (IsGrounded() && movementDirection.magnitude > 0)
+                if (IsGrounded() && movementDirection.magnitude > 0 && !bIsGettingUp)
                 {
                     timer += Time.deltaTime * bobSpeed;
                     bobTarget.transform.localPosition = new Vector3(0.0f, Mathf.Sin(timer) * bobFactor + bobTargetOriginalPosition.y, 0.0f);
@@ -192,7 +219,34 @@ public class PlayerMovement : MonoBehaviour
         {
             case EMovementState.NormalGravity:
             {
-                //gameObject.GetComponent<CapsuleCollider>().enabled = true;
+                switch(movementState)
+                {
+                    case EMovementState.Interacting:
+                    {
+                       
+                    }
+                        break;
+                    case EMovementState.GravityLess:
+                    {
+                       rb.constraints = RigidbodyConstraints.FreezeRotation;
+                       bIsGettingUp = true;
+                       
+                       if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 100f))
+                       {
+                            PositionAfterGettingUp = hit.point + Vector3.up * (gameObject.GetComponent<CapsuleCollider>().height/2 + 0.1f);
+                       }
+                       else
+                       {
+                           transform.position = PositionAfterGettingUp;
+                       }
+                       PositionBeforeGettingUp = transform.position; 
+                       RotationBeforeGettingUp = transform.rotation;
+                       Vector3 fUp = Vector3.up;
+                       Vector3 fForward = Vector3.Cross(transform.right, fUp);
+                       RotationAfterGettingUp = Quaternion.LookRotation(fForward, fUp);
+                    }
+                        break;
+                }
             }
                 break;
             case EMovementState.Interacting:
@@ -202,8 +256,20 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case EMovementState.GravityLess:
             {
-                //gameObject.GetComponent<CapsuleCollider>().enabled = false;
-                //transform.position = new Vector3(transform.position.x, transform.position.y - 2.0f * Time.deltaTime, transform.position.z);
+                switch (movementState)
+                {
+                    case EMovementState.NormalGravity:
+                    {
+                        rb.constraints = RigidbodyConstraints.None;
+                    }
+                        break;
+                    case EMovementState.Interacting:
+                    {
+                        
+                    }
+                        break;
+                }
+                //rb.AddForce(Vector3.up * 10.0f, ForceMode.Impulse);
             }
                 break;
         }

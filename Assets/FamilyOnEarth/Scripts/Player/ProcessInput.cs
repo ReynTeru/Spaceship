@@ -9,6 +9,7 @@ public class ProcessInput : MonoBehaviour
     PlayerLook playerLook;
     PlayerMovement playerMovement;
     PlayerInteraction playerInteraction;
+    MagnetShooter magnetShooter;
   
     
     // Start is called before the first frame update
@@ -20,11 +21,12 @@ public class ProcessInput : MonoBehaviour
         playerLook = GetComponent<PlayerLook>();
         playerMovement = GetComponent<PlayerMovement>();
         playerInteraction = GetComponent<PlayerInteraction>();
+        magnetShooter = GetComponent<MagnetShooter>();
         movementMapActions.Jump.started +=ctx=> playerMovement.ProcessJump();
         movementMapActions.Zoom.started += ctx => playerMovement.Zoom();
         movementMapActions.Zoom.canceled += ctx => playerMovement.StopZoom();
         movementMapActions.Interact.started += ctx => playerInteraction.InputInteract();
-        movementMapActions.NextDialog.started += ctx => playerInteraction.NextLine();
+        movementMapActions.NextDialog.started += ctx => LeftClick();
         movementMapActions.SwitchToGravityLess.started +=
             ctx => playerMovement.SwitchMovementState(EMovementState.GravityLess);
         movementMapActions.ReturnGravity.started +=
@@ -49,5 +51,18 @@ public class ProcessInput : MonoBehaviour
     void OnDisable()
     {
         movementMapActions.Disable();
+    }
+    void LeftClick()
+    {
+        switch (playerMovement.GetMovementState())
+        {
+            case EMovementState.Interacting:
+                playerInteraction.NextLine();
+                break;
+            case EMovementState.GravityLess:
+                magnetShooter.ShootMagnet();
+                break;
+        }
+     
     }
 }
