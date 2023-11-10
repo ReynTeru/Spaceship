@@ -300,7 +300,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1.09, y: 1.36, z: 0.28}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &2771925197079489980
 Rigidbody:
@@ -310,7 +310,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7279869180846100827}
   serializedVersion: 4
-  m_Mass: 100
+  m_Mass: 5
   m_Drag: 1
   m_AngularDrag: 1
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -341,6 +341,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75539850e8c200040ac8528edee06a57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bIsFinal: 0
+  bHasInteracted: 0
+  bIsClipboard: 0
   dialogueLines:
   - "Who wrote this? I can't even remember my own family\u2026"
 --- !u!1 &8681954639831016626

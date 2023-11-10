@@ -25,11 +25,15 @@ public class ProcessInput : MonoBehaviour
         movementMapActions.Zoom.canceled += ctx => playerMovement.StopZoom();
         movementMapActions.Interact.started += ctx => playerInteraction.InputInteract();
         movementMapActions.NextDialog.started += ctx => playerInteraction.NextLine();
+        movementMapActions.SwitchToGravityLess.started +=
+            ctx => playerMovement.SwitchMovementState(EMovementState.GravityLess);
+        movementMapActions.ReturnGravity.started +=
+            ctx => playerMovement.SwitchMovementState(EMovementState.NormalGravity);
     }
 
     void Start()
     {
-        playerLook.ProcessLook(0f, 0f);
+        //playerLook.ProcessLook(0f, 0f);
     }
     // Update is called once per frame
     void Update()

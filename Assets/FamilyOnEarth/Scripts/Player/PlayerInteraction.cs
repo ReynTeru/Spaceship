@@ -21,6 +21,8 @@ public class PlayerInteraction : MonoBehaviour
     public bool bDialogue = false; 
     bool bIsFinal = false;
     public bool bWon = false;
+    [SerializeField] float InteractibleSnapSpeed = 25f;
+    [SerializeField] float InteractibleSnapDistanceCloseness = 0.15f;
 
     private string[] dialogueLines;
     public string[] initialDialogueLines;
@@ -66,11 +68,7 @@ public class PlayerInteraction : MonoBehaviour
                 bWon = true;
             }
         }
-    }
-
-    void LateUpdate()
-    {
-        interactableLocation = interactableLocationTarget.transform.position;
+        
         CheckForInteractable();
 
         if (CurrentInteractionType != InteractionType.None && !bInteractionPrompt)
@@ -83,17 +81,25 @@ public class PlayerInteraction : MonoBehaviour
             InteractionPrompt.SetActive(false);
             bInteractionPrompt = false;
         }
-
+        
         if (bGrabbed)
         {
-            if (Vector3.Distance(interactableObject.transform.position, interactableLocation) > 0.15f)
+            float Distance = Vector3.Distance(interactableObject.transform.position, interactableLocation);
+            //Debug.Log(Distance);
+            if (Distance > InteractibleSnapDistanceCloseness)
             {
-                //Debug.Log("Moving");
-                interactableObject.transform.position = Vector3.Lerp(interactableObject.transform.position, interactableLocation, Time.deltaTime * 10f);
+                
+                interactableObject.transform.position = Vector3.Lerp(interactableObject.transform.position, 
+                    interactableLocation, Time.deltaTime * InteractibleSnapSpeed * 
+                                          (Distance - InteractibleSnapDistanceCloseness));
             }
-            
-           
         }
+    }
+
+    void LateUpdate()
+    {
+        interactableLocation = interactableLocationTarget.transform.position;
+
     }
     
     void CheckForInteractable()
@@ -193,6 +199,10 @@ public class PlayerInteraction : MonoBehaviour
         if (bDialogue)
         {
             DialogueBox.GetComponent<Dialogue>().CallNextLine();
+        }
+        else if (bGrabbed)
+        {
+            InputInteract();
         }
     }
 }

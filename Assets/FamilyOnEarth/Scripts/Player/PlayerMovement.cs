@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    CharacterController characterController;
+    Rigidbody rb;
+    //CharacterController characterController;
     Vector3 playerVelocity;
     public float playerSpeed = 5.0f;
     
@@ -31,11 +32,14 @@ public class PlayerMovement : MonoBehaviour
     bool bDialogue = false;
     bool bIsFinal = false;
     
+    private EMovementState movementState = EMovementState.NormalGravity;
+    
     
     // Start is called before the first frame update
     void Start()
     {
-        characterController = GetComponent<CharacterController>();
+        //characterController = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
         bobTargetOriginalPosition = bobTarget.transform.localPosition;
         cameraOriginalFOV = playerCamera.GetComponent<Camera>().fieldOfView;
     }
@@ -45,6 +49,14 @@ public class PlayerMovement : MonoBehaviour
     {
         bDialogue = gameObject.GetComponent<PlayerInteraction>().bDialogue;
         bGrabbed = gameObject.GetComponent<PlayerInteraction>().bGrabbed;
+        if (bDialogue || bGrabbed)
+        {
+            SwitchMovementState(EMovementState.Interacting);
+        }
+        else if (movementState == EMovementState.Interacting)
+        {
+            SwitchMovementState(EMovementState.NormalGravity);
+        }
         bIsFinal = gameObject.GetComponent<PlayerInteraction>().bWon;
         if (bZoomed)
         {
@@ -59,43 +71,109 @@ public class PlayerMovement : MonoBehaviour
     
     public void PrecessMovement(float longitudinalInput, float lateralInput)
     {
-        if (!bGrabbed && !bDialogue && !bIsFinal)
+        switch (movementState)
         {
-            movementDirection = new Vector3(lateralInput, 0.0f, longitudinalInput);
-            characterController.Move(transform.TransformDirection(movementDirection) * playerSpeed * Time.deltaTime);
-        }
+            case EMovementState.NormalGravity:
+            {
+                if (!bIsFinal)
+                {
+                    movementDirection = new Vector3(lateralInput, 0.0f, longitudinalInput);
+                    rb.velocity = transform.TransformDirection(movementDirection * playerSpeed * Time.deltaTime);
+                }
         
-        playerVelocity.y += gravityValue * Time.deltaTime;
+                playerVelocity.y += gravityValue * Time.deltaTime;
 
-        if (characterController.isGrounded && playerVelocity.y < 0)
-        {
-            playerVelocity.y = -2f;
+                if (IsGrounded() && playerVelocity.y < 0)
+                {
+                    playerVelocity.y = 0f;
+                }
+                rb.velocity += playerVelocity;
+            } 
+                break;
+
+            case EMovementState.Interacting:
+            {
+                playerVelocity.y += gravityValue * Time.deltaTime;
+
+                if (IsGrounded() && playerVelocity.y < 0)
+                {
+                    playerVelocity.y = 0f;
+                }
+                rb.velocity += playerVelocity;
+            }
+                break;
+            case EMovementState.GravityLess:
+            {
+                
+            }
+                break;
         }
-        characterController.Move(playerVelocity * Time.deltaTime);
     }
     
     public void ProcessJump()
     {
-        if (characterController.isGrounded && !bGrabbed && !bDialogue && !bIsFinal)
+        switch (movementState)
         {
-            playerVelocity.y = 0f;
-            playerVelocity.y += Mathf.Sqrt(jumpHeight * -2f * gravityValue);
+            case EMovementState.NormalGravity:
+            {
+                if (IsGrounded() && !bIsFinal)
+                {
+                    playerVelocity.y = 0f;
+                    playerVelocity.y += Mathf.Sqrt(jumpHeight * -2f * gravityValue);
+                }
+            } 
+                break;
+
+            case EMovementState.Interacting:
+            {
+                
+            }
+                break;
+            case EMovementState.GravityLess:
+            {
+                
+            }
+                break;
         }
     }
     
     void HeadBob()
     {
-        if (characterController.isGrounded && movementDirection.magnitude > 0 && !bGrabbed && !bDialogue)
+        switch (movementState)
         {
-            timer += Time.deltaTime * bobSpeed;
-            bobTarget.transform.localPosition = new Vector3(0.0f, Mathf.Sin(timer) * bobFactor + bobTargetOriginalPosition.y, 0.0f);
-            //Debug.Log(Mathf.Sin(timer));
+            case EMovementState.NormalGravity:
+            {
+                if (IsGrounded() && movementDirection.magnitude > 0)
+                {
+                    timer += Time.deltaTime * bobSpeed;
+                    bobTarget.transform.localPosition = new Vector3(0.0f, Mathf.Sin(timer) * bobFactor + bobTargetOriginalPosition.y, 0.0f);
+                    //Debug.Log(Mathf.Sin(timer));
+                }
+                else
+                {
+                    timer = 0.0f;
+                    bobTarget.transform.localPosition = Vector3.Lerp(bobTarget.transform.localPosition, bobTargetOriginalPosition, Time.deltaTime * bobSpeed);
+                }
+            }
+                break;
+
+            case EMovementState.Interacting:
+            {
+                
+            }
+                break;
+            case EMovementState.GravityLess:
+            {
+                
+            }
+                break;
         }
-        else
-        {
-            timer = 0.0f;
-            bobTarget.transform.localPosition = Vector3.Lerp(bobTarget.transform.localPosition, bobTargetOriginalPosition, Time.deltaTime * bobSpeed);
-        }
+    }
+    
+    bool IsGrounded()
+    {
+        Debug.DrawRay(transform.position, Vector3.down*((gameObject.GetComponent<CapsuleCollider>().height/2) + 0.1f), Color.red);
+        return Physics.Raycast(transform.position, Vector3.down, (gameObject.GetComponent<CapsuleCollider>().height/2) + 0.1f);
     }
     
     public void Zoom()
@@ -107,4 +185,36 @@ public class PlayerMovement : MonoBehaviour
     {
         bZoomed = false;
     }
+    
+    public void SwitchMovementState(EMovementState newState)
+    {
+        switch (newState)
+        {
+            case EMovementState.NormalGravity:
+            {
+                //gameObject.GetComponent<CapsuleCollider>().enabled = true;
+            }
+                break;
+            case EMovementState.Interacting:
+            {
+                
+            }
+                break;
+            case EMovementState.GravityLess:
+            {
+                //gameObject.GetComponent<CapsuleCollider>().enabled = false;
+                //transform.position = new Vector3(transform.position.x, transform.position.y - 2.0f * Time.deltaTime, transform.position.z);
+            }
+                break;
+        }
+        movementState = newState;
+        Debug.Log(movementState);
+    }
+}
+
+public enum EMovementState
+{
+    NormalGravity,
+    Interacting,
+    GravityLess,
 }

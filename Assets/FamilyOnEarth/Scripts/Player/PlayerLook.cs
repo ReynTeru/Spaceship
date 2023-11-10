@@ -49,12 +49,12 @@ public class PlayerLook : MonoBehaviour
             else
             {
                 currentClampAngle = clampAngle;
-            }
-            verticalRotation -= verticalLookInput * verticalLookSenstivity * Time.deltaTime;
-            verticalRotation = Mathf.Clamp(verticalRotation, -80.0f, currentClampAngle);
+                verticalRotation -= verticalLookInput * verticalLookSenstivity * Time.deltaTime;
+                verticalRotation = Mathf.Clamp(verticalRotation, -80.0f, currentClampAngle);
         
-            playerCamera.transform.localRotation = Quaternion.Euler(verticalRotation, 0.0f, 0.0f);
-            transform.Rotate(Vector3.up * horizontalLookInput * horizontalLookSenstivity * Time.deltaTime);
+                playerCamera.transform.localRotation = Quaternion.Euler(verticalRotation, 0.0f, 0.0f);
+                transform.Rotate(Vector3.up * (horizontalLookInput * horizontalLookSenstivity * 0.01f));
+            }
         }
        
     }

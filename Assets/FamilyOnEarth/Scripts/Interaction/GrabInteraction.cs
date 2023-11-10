@@ -42,9 +42,9 @@ public class GrabInteraction : MonoBehaviour, IInteract
     void IInteract.StopInteract()
     {
         gameObject.GetComponent<Rigidbody>().isKinematic = false;
-        gameObject.GetComponent<Rigidbody>().AddForce(PlayerRef.transform.forward * 50.0f, ForceMode.Impulse);
-        Vector3 fRandom = new Vector3(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
-        fRandom = fRandom.normalized;
+        gameObject.GetComponent<Rigidbody>().AddForce(PlayerRef.transform.forward * 5.0f, ForceMode.Impulse);
+        Vector3 fRandom = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+        //fRandom = fRandom.normalized;
         
         gameObject.GetComponent<Rigidbody>().AddTorque(fRandom* LetGoImpulse, ForceMode.Impulse);
      

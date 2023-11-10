@@ -198,7 +198,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7773790190938791307}
   serializedVersion: 4
-  m_Mass: 100
+  m_Mass: 5
   m_Drag: 1
   m_AngularDrag: 1
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -214,7 +214,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!65 &4721779589609311426
@@ -236,7 +236,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.3, y: 0.5, z: 0.1}
+  m_Size: {x: 0.42, y: 0.5, z: 0.13}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8871254968790452405
 MonoBehaviour:
@@ -250,6 +250,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75539850e8c200040ac8528edee06a57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bIsFinal: 0
+  bHasInteracted: 0
+  bIsClipboard: 0
   dialogueLines:
   - Terraforming? I wonder if I was part of it...
 --- !u!1 &8197397470932043826
@@ -319,9 +322,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Log #87
 
-    Initial experiments with bio-robots are promising. They
-    consume organic matter efficiently, multiplying it at astonishing rates. With
-    their help we will accelerate terraforming.
+    Initial experiments with bio-robots are promising. They consume
+    organic matter efficiently, multiplying it at astonishing rates. With their help
+    we will accelerate terraforming.
 
 '
   m_isRightToLeft: 0
