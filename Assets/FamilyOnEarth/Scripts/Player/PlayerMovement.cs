@@ -31,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     bool bGrabbed = false;
     bool bDialogue = false;
     bool bIsFinal = false;
+    [SerializeField] bool bFreezeRotationInGravityLess = true;
     
     private EMovementState movementState = EMovementState.NormalGravity;
     public EMovementState GetMovementState()
@@ -45,6 +46,12 @@ public class PlayerMovement : MonoBehaviour
     Vector3 PositionBeforeGettingUp;
     Quaternion RotationBeforeGettingUp;
     Quaternion RotationAfterGettingUp;
+    float CapsuleHeight;
+    float CapsuleRadius;
+    float CameraHeight;
+    bool bToGravityLess = false;
+    
+    GameObject MainCamera;
     
     
     
@@ -55,6 +62,10 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         bobTargetOriginalPosition = bobTarget.transform.localPosition;
         cameraOriginalFOV = playerCamera.GetComponent<Camera>().fieldOfView;
+        CapsuleHeight = gameObject.GetComponent<CapsuleCollider>().height;
+        CapsuleRadius = gameObject.GetComponent<CapsuleCollider>().radius;
+        MainCamera = GameObject.Find("Main Camera");
+        CameraHeight = MainCamera.transform.localPosition.y;
     }
 
     // Update is called once per frame
@@ -88,10 +99,25 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log(gettingUpPercentage);
             transform.rotation = Quaternion.Lerp(RotationBeforeGettingUp, RotationAfterGettingUp, gettingUpPercentage);
             transform.position = Vector3.Lerp(PositionBeforeGettingUp, PositionAfterGettingUp, gettingUpPercentage);
+            gameObject.GetComponent<CapsuleCollider>().height = Mathf.Lerp(CapsuleRadius, CapsuleHeight, gettingUpPercentage);
+            MainCamera.transform.localPosition = Vector3.Lerp(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, CameraHeight, 0.0f), gettingUpPercentage);
             if (gettingUpTimer >= gettingUpTime)
             {
                 gettingUpTimer = 0.0f;
                 bIsGettingUp = false;
+            }
+        }
+        else if (bToGravityLess)
+        {
+            gettingUpTimer += Time.deltaTime;
+            float gettingUpPercentage = gettingUpTimer / gettingUpTime;
+            //transform.position = Vector3.Lerp(PositionBeforeGettingUp, PositionAfterGettingUp, gettingUpPercentage);
+            gameObject.GetComponent<CapsuleCollider>().height = Mathf.Lerp(CapsuleHeight, CapsuleRadius, gettingUpPercentage);
+            MainCamera.transform.localPosition = Vector3.Lerp(new Vector3(0.0f, CameraHeight, 0.0f), new Vector3(0.0f, 0.0f, 0.0f), gettingUpPercentage);
+            if (gettingUpTimer >= gettingUpTime)
+            {
+                gettingUpTimer = 0.0f;
+                bToGravityLess = false;
             }
         }
     }
@@ -228,12 +254,17 @@ public class PlayerMovement : MonoBehaviour
                         break;
                     case EMovementState.GravityLess:
                     {
+                        gameObject.GetComponent<Magnetizer>().SwitchMagnetVisibility();
+                        gameObject.GetComponent<Magnetizer>().RecallMagnet();
                        rb.constraints = RigidbodyConstraints.FreezeRotation;
                        bIsGettingUp = true;
+                       bToGravityLess = false;
+                       gettingUpTimer = 0.0f;
                        
-                       if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 100f))
+                       if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 1000f))
                        {
-                            PositionAfterGettingUp = hit.point + Vector3.up * (gameObject.GetComponent<CapsuleCollider>().height/2 + 0.1f);
+                            PositionAfterGettingUp = hit.point + Vector3.up * (CapsuleHeight/2 + 0.1f);
+                            Debug.DrawLine(hit.point, hit.point + Vector3.up * (CapsuleHeight + 0.1f), Color.green);
                        }
                        else
                        {
@@ -260,7 +291,16 @@ public class PlayerMovement : MonoBehaviour
                 {
                     case EMovementState.NormalGravity:
                     {
-                        rb.constraints = RigidbodyConstraints.None;
+                        gameObject.GetComponent<Magnetizer>().SwitchMagnetVisibility();
+                        bToGravityLess = true;
+                        bIsGettingUp = false;
+                        gettingUpTimer = 0.0f;
+                        PositionBeforeGettingUp = transform.position;
+                        PositionAfterGettingUp = transform.position + Vector3.up * CameraHeight;
+                        if (!bFreezeRotationInGravityLess)
+                        {
+                            rb.constraints = RigidbodyConstraints.None;
+                        }
                     }
                         break;
                     case EMovementState.Interacting:

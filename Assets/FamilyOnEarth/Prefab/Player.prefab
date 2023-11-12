@@ -10,11 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 4587867686536907619}
   - component: {fileID: 2337320204976179781}
-  - component: {fileID: 6572947927263254726}
   - component: {fileID: 5024093624727527576}
   - component: {fileID: 650907601326553164}
   - component: {fileID: 5389163316106082842}
   - component: {fileID: 4872220214182630599}
+  - component: {fileID: 2296640451735793999}
   - component: {fileID: 141344400607698870}
   m_Layer: 0
   m_Name: Player
@@ -38,7 +38,6 @@ Transform:
   m_Children:
   - {fileID: 4195264355432748870}
   - {fileID: 975698277564831105}
-  - {fileID: 956453495425054726}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &2337320204976179781
@@ -60,35 +59,9 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.3
-  m_Height: 1.75
+  m_Radius: 0.25
+  m_Height: 1.6
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!143 &6572947927263254726
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 962412183650971799}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Height: 1.74
-  m_Radius: 0.2
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &5024093624727527576
 MonoBehaviour:
@@ -114,16 +87,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee0d777f639e85943af482d1e5cead23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 2
+  playerSpeed: 100
   gravityValue: -9.81
-  jumpHeight: 2
+  jumpHeight: 0.5
   bobTarget: {fileID: 8185600015441658425}
-  bobFactor: 0.075
+  bobFactor: 0.05
   bobSpeed: 10
   playerCamera: {fileID: 1581786858794696329}
   cameraZoomedFOV: 30
   PushForce: 10
-  gettingUpTime: 2.5
+  bFreezeRotationInGravityLess: 0
+  gettingUpTime: 1
 --- !u!114 &5389163316106082842
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,8 +110,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2da30b8ce512834bbe003bc63e7c0c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalLookSenstivity: 30
-  verticalLookSenstivity: 30
+  horizontalLookSenstivity: 12
+  verticalLookSenstivity: 10
   playerCamera: {fileID: 8185600015441658425}
 --- !u!54 &4872220214182630599
 Rigidbody:
@@ -166,6 +140,22 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 1
+--- !u!114 &2296640451735793999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962412183650971799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 790cb44990f175a4e935b45b8e524c77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MagnetPrefab: {fileID: 5641285884448271687, guid: d3c95f35f1e848741a862c3f01e4a022, type: 3}
+  MagnetShootForce: 10
+  MagnetSpawnPoint: {fileID: 5119220620065806700}
+  MagnetPower: 1
 --- !u!114 &141344400607698870
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -222,7 +212,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 956453495425054726}
   m_Father: {fileID: 4195264355432748870}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &4970267684095278272
@@ -352,12 +343,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5119220620065806700}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.3499999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4587867686536907619}
+  m_Father: {fileID: 758064432702328548}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7698713565405069763
 GameObject:

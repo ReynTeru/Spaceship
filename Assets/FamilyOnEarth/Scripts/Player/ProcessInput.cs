@@ -9,7 +9,7 @@ public class ProcessInput : MonoBehaviour
     PlayerLook playerLook;
     PlayerMovement playerMovement;
     PlayerInteraction playerInteraction;
-    MagnetShooter magnetShooter;
+    Magnetizer _magnetizer;
   
     
     // Start is called before the first frame update
@@ -21,9 +21,9 @@ public class ProcessInput : MonoBehaviour
         playerLook = GetComponent<PlayerLook>();
         playerMovement = GetComponent<PlayerMovement>();
         playerInteraction = GetComponent<PlayerInteraction>();
-        magnetShooter = GetComponent<MagnetShooter>();
+        _magnetizer = GetComponent<Magnetizer>();
         movementMapActions.Jump.started +=ctx=> playerMovement.ProcessJump();
-        movementMapActions.Zoom.started += ctx => playerMovement.Zoom();
+        movementMapActions.Zoom.started += ctx => RightClick();
         movementMapActions.Zoom.canceled += ctx => playerMovement.StopZoom();
         movementMapActions.Interact.started += ctx => playerInteraction.InputInteract();
         movementMapActions.NextDialog.started += ctx => LeftClick();
@@ -60,9 +60,22 @@ public class ProcessInput : MonoBehaviour
                 playerInteraction.NextLine();
                 break;
             case EMovementState.GravityLess:
-                magnetShooter.ShootMagnet();
+                _magnetizer.ShootMagnet();
                 break;
         }
      
+    }
+    
+    void RightClick()
+    {
+        switch (playerMovement.GetMovementState())
+        {
+            case EMovementState.Interacting:
+                playerMovement.Zoom();
+                break;
+            case EMovementState.GravityLess:
+                _magnetizer.RecallMagnet();
+                break;
+        }
     }
 }
