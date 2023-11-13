@@ -53,6 +53,8 @@ public class PlayerMovement : MonoBehaviour
     
     GameObject MainCamera;
     
+    EMovementState PreviousMovementState;
+    
     
     
     // Start is called before the first frame update
@@ -73,13 +75,28 @@ public class PlayerMovement : MonoBehaviour
     {
         bDialogue = gameObject.GetComponent<PlayerInteraction>().bDialogue;
         bGrabbed = gameObject.GetComponent<PlayerInteraction>().bGrabbed;
-        if (bDialogue || bGrabbed)
+        if (bDialogue || bGrabbed )
         {
-            SwitchMovementState(EMovementState.Interacting);
+            if (movementState != EMovementState.Interacting)
+            {
+                SwitchMovementState(EMovementState.Interacting);
+            }
         }
         else if (movementState == EMovementState.Interacting)
         {
-            SwitchMovementState(EMovementState.NormalGravity);
+            switch (PreviousMovementState)
+            {
+                case EMovementState.NormalGravity:
+                {
+                    SwitchMovementState(EMovementState.NormalGravity);
+                }
+                    break;
+                case EMovementState.GravityLess:
+                {
+                    SwitchMovementState(EMovementState.GravityLess);
+                }
+                    break;
+            }
         }
         bIsFinal = gameObject.GetComponent<PlayerInteraction>().bWon;
         if (bZoomed)
@@ -96,11 +113,13 @@ public class PlayerMovement : MonoBehaviour
         {
             gettingUpTimer += Time.deltaTime;
             float gettingUpPercentage = gettingUpTimer / gettingUpTime;
-            Debug.Log(gettingUpPercentage);
+           // Debug.Log(gettingUpPercentage);
             transform.rotation = Quaternion.Lerp(RotationBeforeGettingUp, RotationAfterGettingUp, gettingUpPercentage);
             transform.position = Vector3.Lerp(PositionBeforeGettingUp, PositionAfterGettingUp, gettingUpPercentage);
             gameObject.GetComponent<CapsuleCollider>().height = Mathf.Lerp(CapsuleRadius, CapsuleHeight, gettingUpPercentage);
             MainCamera.transform.localPosition = Vector3.Lerp(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, CameraHeight, 0.0f), gettingUpPercentage);
+            float InteractibleZ = gameObject.GetComponent<PlayerInteraction>().interactableLocationTarget.transform.localPosition.z;
+            gameObject.GetComponent<PlayerInteraction>().interactableLocationTarget.transform.localPosition = Vector3.Lerp(new Vector3(0.0f, 0.0f, InteractibleZ), new Vector3(0.0f, CameraHeight, InteractibleZ), gettingUpPercentage);
             if (gettingUpTimer >= gettingUpTime)
             {
                 gettingUpTimer = 0.0f;
@@ -114,6 +133,8 @@ public class PlayerMovement : MonoBehaviour
             //transform.position = Vector3.Lerp(PositionBeforeGettingUp, PositionAfterGettingUp, gettingUpPercentage);
             gameObject.GetComponent<CapsuleCollider>().height = Mathf.Lerp(CapsuleHeight, CapsuleRadius, gettingUpPercentage);
             MainCamera.transform.localPosition = Vector3.Lerp(new Vector3(0.0f, CameraHeight, 0.0f), new Vector3(0.0f, 0.0f, 0.0f), gettingUpPercentage);
+            float InteractibleZ = gameObject.GetComponent<PlayerInteraction>().interactableLocationTarget.transform.localPosition.z;
+            gameObject.GetComponent<PlayerInteraction>().interactableLocationTarget.transform.localPosition = Vector3.Lerp(new Vector3(0.0f, CameraHeight, InteractibleZ), new Vector3(0.0f, 0.0f, InteractibleZ), gettingUpPercentage);
             if (gettingUpTimer >= gettingUpTime)
             {
                 gettingUpTimer = 0.0f;
@@ -146,6 +167,7 @@ public class PlayerMovement : MonoBehaviour
 
             case EMovementState.Interacting:
             {
+                /*
                 playerVelocity.y += gravityValue * Time.deltaTime;
 
                 if (IsGrounded() && playerVelocity.y < 0)
@@ -153,6 +175,7 @@ public class PlayerMovement : MonoBehaviour
                     playerVelocity.y = 0f;
                 }
                 rb.velocity += playerVelocity;
+                */
             }
                 break;
             case EMovementState.GravityLess:
@@ -313,6 +336,7 @@ public class PlayerMovement : MonoBehaviour
             }
                 break;
         }
+        PreviousMovementState = movementState;
         movementState = newState;
         Debug.Log(movementState);
     }

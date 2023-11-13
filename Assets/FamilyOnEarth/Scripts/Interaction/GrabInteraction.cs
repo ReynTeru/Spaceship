@@ -24,13 +24,14 @@ public class GrabInteraction : MonoBehaviour, IInteract
     {
         if (bGrabbed)
         {
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(-PlayerRef.transform.forward), Time.deltaTime * 10.0f);
+            //transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(-PlayerRef.transform.forward), Time.deltaTime * 10.0f);
         }
     }
     
     void IInteract.Interact()
     {
         gameObject.GetComponent<Rigidbody>().isKinematic = true;
+        gameObject.GetComponent<Collider>().enabled = false;
         bGrabbed = true;
         if (bIsClipboard)
         {
@@ -42,6 +43,7 @@ public class GrabInteraction : MonoBehaviour, IInteract
     void IInteract.StopInteract()
     {
         gameObject.GetComponent<Rigidbody>().isKinematic = false;
+        gameObject.GetComponent<Collider>().enabled = true;
         gameObject.GetComponent<Rigidbody>().AddForce(PlayerRef.transform.forward * 5.0f, ForceMode.Impulse);
         Vector3 fRandom = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
         //fRandom = fRandom.normalized;

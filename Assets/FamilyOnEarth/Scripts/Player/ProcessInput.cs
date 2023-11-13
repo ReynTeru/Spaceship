@@ -74,7 +74,7 @@ public class ProcessInput : MonoBehaviour
                 playerMovement.Zoom();
                 break;
             case EMovementState.GravityLess:
-                _magnetizer.RecallMagnet();
+                _magnetizer.SwitchPolarity();
                 break;
         }
     }

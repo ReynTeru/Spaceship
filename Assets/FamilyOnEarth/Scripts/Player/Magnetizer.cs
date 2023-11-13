@@ -9,6 +9,8 @@ public class Magnetizer : MonoBehaviour
     [SerializeField] float MagnetShootForce = 10.0f;
     [SerializeField] GameObject MagnetSpawnPoint;
     [SerializeField] float MagnetPower = 1.0f;
+    [SerializeField] AnimationCurve AttractionCurve;
+    [SerializeField] AnimationCurve RepulsionCurve;
     
     GameObject CurrentMagnet;
     bool bMagnetIsAttracting = true;
@@ -29,9 +31,11 @@ public class Magnetizer : MonoBehaviour
         {
             Vector3 direction = bMagnetIsAttracting ? CurrentMagnet.transform.position - transform.position : transform.position - CurrentMagnet.transform.position;
             float distance = direction.magnitude;
-            float DistanceFactor = Mathf.Clamp(distance / 10.0f, 0.0f, 1.0f);
+            float DistanceFactor = Mathf.Clamp(distance / 5f, 0.0f, 1.0f);
             DistanceFactor = bMagnetIsAttracting ? DistanceFactor : 1.0f - DistanceFactor;
-            gameObject.GetComponent<Rigidbody>().AddForce(direction.normalized * MagnetPower * DistanceFactor);
+            float ForceFactor = bMagnetIsAttracting ? AttractionCurve.Evaluate(DistanceFactor) : RepulsionCurve.Evaluate(DistanceFactor);
+           // Debug.Log(DistanceFactor);
+            gameObject.GetComponent<Rigidbody>().AddForce(direction.normalized * MagnetPower * ForceFactor);
         }
     }
     
@@ -46,7 +50,7 @@ public class Magnetizer : MonoBehaviour
         }
         else if (CurrentMovementState == EMovementState.GravityLess && !CurrentMagnet.GetComponent<Magnet>().bIsWithPlayer)
         {
-            SwitchPolarity();
+            RecallMagnet();
         }
     }
     
@@ -56,19 +60,18 @@ public class Magnetizer : MonoBehaviour
         {
             CurrentMagnet.GetComponent<Magnet>().Recall();
             CurrentMagnet.transform.position = MagnetSpawnPoint.transform.position;
-            CurrentMagnet.transform.rotation = Quaternion.identity;
+            CurrentMagnet.transform.rotation = Quaternion.LookRotation(MagnetSpawnPoint.transform.forward, MagnetSpawnPoint.transform.up);
             CurrentMagnet.transform.parent = MagnetSpawnPoint.transform;
-        }
-        else if (CurrentMovementState == EMovementState.GravityLess && CurrentMagnet.GetComponent<Magnet>().bIsWithPlayer)
-        {
-            SwitchPolarity();
         }
     }
 
-    private void SwitchPolarity()
-    {
-        bMagnetIsAttracting = !bMagnetIsAttracting;
-        CurrentMagnet.GetComponent<Magnet>().SwitchColor(bMagnetIsAttracting);
+    public void SwitchPolarity()
+    {      
+        if (CurrentMovementState == EMovementState.GravityLess)
+        {
+            bMagnetIsAttracting = !bMagnetIsAttracting;
+            CurrentMagnet.GetComponent<Magnet>().SwitchColor(bMagnetIsAttracting);
+        }
     }
 
     public void SwitchMagnetVisibility()

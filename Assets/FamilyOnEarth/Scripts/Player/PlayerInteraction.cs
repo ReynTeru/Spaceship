@@ -92,6 +92,9 @@ public class PlayerInteraction : MonoBehaviour
                 interactableObject.transform.position = Vector3.Lerp(interactableObject.transform.position, 
                     interactableLocation, Time.deltaTime * InteractibleSnapSpeed * 
                                           (Distance - InteractibleSnapDistanceCloseness));
+                interactableObject.transform.rotation = Quaternion.Lerp(interactableObject.transform.rotation, 
+                    Quaternion.LookRotation(interactableLocationTarget.transform.forward*-1,interactableLocationTarget.transform.up), Time.deltaTime * InteractibleSnapSpeed * 
+                                          (Distance - InteractibleSnapDistanceCloseness));
             }
         }
     }
